@@ -1,6 +1,11 @@
-<!DOCTYPE html> <html> <head>
+<!DOCTYPE html>
+<html>
+<head>
 <title>Project Aurora</title>
-</head> <body>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="wrapper">
 <h1>Project Aurora</h1>
 <p>In the beginning, we decided that we wanted to create some sort of 3D multiplayer game because we had never made a multiplayer game before and Luis had never made a 3D game before.</p>
 <p>We thought about what kind of game we could make and chose to try to make a game somewhat based on the social game "Werwolf".</p>
@@ -406,4 +411,5 @@ velocity = new Vector3(horizontalVelocity.X, verticalVelocity, horizontalVelocit
 <img src ="pictures/depth-artifacts.png" alt="The image that has gone missing shows shadows covering random parts of the scene that should be lit...." style="width:width;height:height" title="You probably won't believe how many hours I spent fixing this simple bug..."/>
 <p>Now we simply multiply the total factor by the brightness and we should have working shadows. The system still is a bit unreliable and some code change broke shadows during our final preparations (we should be able to find it via git, but because shaders are so tricky, we did not succeed so far). We are trying to get shadows working again in all their glory very soon, so do not wonder if the shadows appear a bit off at the moment.</p>
 <p>Thanks for reading the documentation on rendering. I hope it was not too long, I was in fact only talking about the most important bits. Most of the rendering code is in the Project AuroraClient.3DRenderer, so should you be curious e. g. how exactly the matrices are built, you can take a look there, but comments are spares and the code might not be very tidy...</p>
+</div>
 </body> </html>
