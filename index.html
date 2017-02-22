@@ -7,6 +7,12 @@
 <body>
 <div class="wrapper">
 <h1>Project Aurora</h1>
+<h2>How we converted the Markdown to HTML</h2>
+<p>The quickest way to convert Markdown to HTML is to use on of many existing converters. They are available to for end-users and as software libraries and support the full markdown standard. However, since the basic syntax of markdown is rather simple, we chose to instead write our own converter. It handles most of the basics (headlines, paragraphs, lists and images) fully automatically. Because we didn't want to invest too much time into the converter, it is quite limited in scope and does not support underlining to mark headlines etc. After we got the HTML output from the converter, we did some manual touch-ups (once again because it was quicker than extending the converter). We also added a simply stylesheet to make the documentation look a little bit less old...
+
+You can find the converter <a href="https://github.com/jalgamestudios/project-aurora.github.io">here</a>.
+
+<h2>Introduction</h2>
 <p>In the beginning, we decided that we wanted to create some sort of 3D multiplayer game because we had never made a multiplayer game before and Luis had never made a 3D game before.</p>
 <p>We thought about what kind of game we could make and chose to try to make a game somewhat based on the social game "Werwolf".</p>
 <p>It should have multiple competing teams with hidden roles and some system to make for an interesting fight where roles are slowly uncovered.</p>
@@ -49,7 +55,7 @@
 </li>
 </ol>
 
-<h2>1. Networking <a name="Networking"><a/></h2>
+<h2>1. Networking <a name="Networking"></a></h2>
 <p>The problems and our solutions to data management</p>
 <p>We decided to make a multiplayer game because neither of has had done something with multiplayer before and we felt up for the challenge.  Overall the state of the game needs to be transferred between computers so that every player is in the same situation without this taking up so much bandwith that it wouldn't run smoothly. </p>
 <p>At the moment our game only transfers the position and the needs (like hunger or thirst) of all players and isn't yet capable of transmitting gamestates such as day/night or game is paused/is running. </p>
@@ -63,24 +69,24 @@
             var length = BitConverter.GetBytes(bytes.Count());
             byte[] actualData = new byte[bytes.Count() + length.Count()];
 
-            for (int i = 0; i < length.Count(); i++)
+            for (int i = 0; i &lt; length.Count(); i++)
                 actualData[i] = length[i];
 
-            for (int i = 0; i < bytes.Count(); i++)
+            for (int i = 0; i &lt; bytes.Count(); i++)
                 actualData[i + length.Count()] = bytes[i];
 
             clients[clientIndex].Send(actualData);
         }</code></pre>
 <p>This code does not simply send the raw information: First, the length of the message is measured and converted into a byte array (the *var* type is simply a shorthand and the compiler replaces it by the type of the expression after the "=*, which in this case is an array of bytes).</p>
-<p>Before the message is sent, the length of the message is placed in front of the message and this combined data is then sent to the client. This is because TCP transmitts all information as one long message. On the receiving end, we have to keep track of how long every message is to know where one message ends and the next one starts.  We can also use this simple function to send data to all players:<pre><code>public void broadcast(byte[] bytes)
+<p>Before the message is sent, the length of the message is placed in front of the message and this combined data is then sent to the client. This is because TCP transmitts all information as one long message. On the receiving end, we have to keep track of how long every message is to know where one message ends and the next one starts.  We can also use this simple function to send data to all players:</p>
+<pre><code>public void broadcast(byte[] bytes)
         {
-            for (int i = 0; i < clients.Count; i++)
+            for (int i = 0; i &lt; clients.Count; i++)
                 send(bytes, i);
         }
 </code></pre>
-</p>
 <p>We use broadcast to inform other players of actions that a server recived (like moving) and send to send player specific information (like informing a client what player of the playerlist he controls).</p>
-<h3> 1.1The TC protocol <a name="TCP"><a/></h3>
+<h3> 1.1The TC protocol <a name="TCP"></a></h3>
 <p>The Transmission Control protocol is a protocol on the basis of IP (Internet Protocol). It handles data transfer to the point that you have to setup a virtual connection using an IP and then you can feed it data that it will transport.  The protocol makes sure that all data sent will arrive aswell as making sure that it is in order. The drawback is that delays in transfer can occur when data doesn't arrive leading to lags for a multiplayer game. </p>
 <p>In (almost) all online games the UD protocol (User datagram protocol) is used because it doesn't have as much delay.  This is because UDP doesn't make sure all data arrives and arrives in order. The disadvantage is that you have to have a nifty system inplace to make sure there are no misunderstandings because of the arriving data. </p>
 <p>We *should* have chosen UDP because having (almost) no delay is what you'd want in a multiplayer game, but the complications that would originate from it would be too much for us to handle. This means that we cannot exactly create a Quake clone, but because our game will be slower-paced, it will not be quite as harmful to the user experience.</p>
@@ -105,13 +111,13 @@ public static void reportMovement(Vector3 newLocation, Vector2 newRotation)
 <p>This is the code of the writeBytes function. It is a simple helper function that writes on short array into another bigger array.</p>
 <pre><code>private static void writeBytes(byte[] array, byte[] toBeWritten, int startIndex)
         {
-            for (int i = 0; i < toBeWritten.Length; i++)
+            for (int i = 0; i &lt; toBeWritten.Length; i++)
             {
                 array[i + startIndex] = toBeWritten[i];
             }
         }</code></pre>
 <p>It does not return anything because array in C# are <em>reference types</em>. This means that instead of passing the content of the array as a parameter, only the memory adress is passed on. Therefore the parameter is not a copy, but actually the same array as the <em>command</em> array in the code above.</p>
-<h3>1.2 Transmitted data <a name="Transmitteddata"><a/></h3>
+<h3>1.2 Transmitted data <a name="Transmitteddata"></a></h3>
 <h4>1.2.1 Conversion to bytes</h4>
 <p>We have created a system to turn the informations we send into bytes that the receiving end can comprehend. </p>
 <p>We send different types of information (player movement, change of stats like hunger, etc). To distinguish these, the first byte of a message contains an <em>action identifier</em> that tells the receiver which type of information is transmitted. A player movement, for example, is represented by a 4. This means that we can only have 256 actions, but the system could be expanded easily e. g. by making the action identifier 2 bytes long.</p>
@@ -145,19 +151,21 @@ public static void reportMovement(Vector3 newLocation, Vector2 newRotation)
         player.position = newPosition;
     }
     break;</code></pre>
-<h3> 1.3 What needs to be added to the server distibution <a name="Futureofourdatatransfer"><a/></h3>
+<h3> 1.3 What needs to be added to the server distibution <a name="Futureofourdatatransfer"></a></h3>
 <p>Right now the basics are there and you can see each other move around, but crucial parts are still missing. We need to add entites to the game whos position will get transferred, so that weapons and similar things can exist.</p>
 <p>At the moment if a player disconnects, other player connected to the server will crash. This can be considered a bug,  but in reality we haven't added code removing a player from other players playerlists if someone disonnects.</p>
 <p>As explained in the TCP article, UDP (User Datagram Protocol) should be our protocol of choice. But as explained there the complications would be complicated to handle,  but if we have spare time at the end(wich we probably wont), we might swap protocols. </p>
-<h3> 1.4 Controls <a name="Controls"><a/></h3>
+<h3> 1.4 Controls <a name="Controls"></a></h3>
 <p>The basic input for mouse position and keypresses comes from the Monogame framework.</p>
 <p>We can use that input almost directly, but because we have a first person view where you can look around we have to do a couple of extra things.</p>
 <p>The mouse position we get from the framework is the position on screen. To get the movement of the cursor we reset the mouse position to  the center of the screen each tick and look how at much it is offset from that point to get the movement. This is then simply added to the rotation of the camera and of the model to make the character look around.</p>
 <p>In our current stage we have a 3rd person camera active, but this is just for testing purposes because it is easier to debug the collision if you see the player. </p>
 <p>The movement of the player was also a little tricky, because we want a couple of things:</p>
-<ul><li> The movement to accelerate, we don't just want to set a fixed speed. (It feels way more natural this way)</li>
-<li> The speed to be capped, so that you can't accelerate forever</li></ul>
-<li> The speed to decrease fast, but not instant </li></ul>
+<ul>
+	<li> The movement to accelerate, we don't just want to set a fixed speed. (It feels way more natural this way)</li>
+	<li> The speed to be capped, so that you can't accelerate forever</li>
+	<li> The speed to decrease fast, but not instant </li>
+</ul>
 <p>This is the code we used to calculate the player direction:</p>
 <pre><code>Vector2 targetDirection = getTargetDirection();
 
@@ -173,7 +181,7 @@ velocity = new Vector3(horizontalVelocity.X, verticalVelocity, horizontalVelocit
 <p>This works by taking the target direction (which is based on the direction the player is looking in or 0 is the player is not moving) and the current horizontal velocity. The difference is then calculated and added to the current velocity, multiplied by the delta time (<em>Time.gameElapsedSeconds</em>). This multiplication makes sure that the game runs similarly at all framerates (at 60 frames per second, 1/60th of the difference is added to the velocity 60 times a second, at 30 frames per second, 1/30th is added 30 times).</p>
 <p>The velocity will asymptotically approach 0, but never reach it, because every frame, the current velocity is only partially moved to the target velocity. This doesn't really concern us because it gets very close to 0 very fast.</p>
 <p>The second part of the code takes care of the vertical motion, which is a linearly accelerated motion. We simply substract (because gravity points in negative Y direction in our game) the acceleration, once again multiplied by the elapsed time, from the current velocity. Finally, we combine these velocities into the final velocity vector.</p>
-<h3> 1.5 Collision <a name="Collision"><a/></h3>
+<h3> 1.5 Collision <a name="Collision"></a></h3>
 <p>The game has to check if a step is "legal" before it is made to make sure that the player can't run through walls. We also have to add gravity, so that the player falls as long as there is no ground beneath he is touching.</p>
 <p>This is a rather complicated matter, and we had to find an algorithm that checks if a triangle intersects another triangle that isn't too intense on resources. </p>
 <p>We found an <a href="http://web.stanford.edu/class/cs277/resources/papers/Moller1997b.pdf">algorithm</a>
@@ -186,7 +194,7 @@ velocity = new Vector3(horizontalVelocity.X, verticalVelocity, horizontalVelocit
 <pre><code>public static bool collides(Triangle triangle, out int collidingTriangleIndex)
 {
     collidingTriangleIndex = -1;
-    for (int i = 0; i < drawnMesh.triangles.Count; i++)
+    for (int i = 0; i &lt; drawnMesh.triangles.Count; i++)
         if (IntersectionManager.intersect(drawnMesh.triangles[i].physicsTriangle, triangle))
         {
             collidingTriangleIndex = i;
@@ -196,7 +204,7 @@ velocity = new Vector3(horizontalVelocity.X, verticalVelocity, horizontalVelocit
 }</code></pre>
 <p>Basically, we loop through the triangles of the world and use the IntersectionManager (which contains our conversion of M&#246;ller's algorithm) to check the intersection. The collidingTriangleIndex is a special parameter, a so-called output parameter. The code that <em>collides()</em> inserts a variable there and <em>collides()</em> will put a value in that variable before returning. In this case, we store the index of the colliding triangle or -1 if there is no collision. Currently, we do not use that data, but in the future, we could use it to play different sounds depending on the surface etc.</p>
 <p>Each frame, after the velocity is computed, the player is moved in the direction. After that, it is checked whether the player intersects with the world. If he does, he is simply moved back to the starting location.</p>
-<h2> 2. Rendering<a name="Rendering"><a/></h2>
+<h2> 2. Rendering<a name="Rendering"></a></h2>
 <p>In the first part, we discussed how we built a networking system from the ground up. We decided to take a similar approach for the graphics. Instead of using an existing engine that comes with countless features out of the box like Unreal or Unity3D, we wanted to build our rendering technology from the ground up. This means that we had to write everything ourselfs, including calculations for light and shadows.</p>
 <p>The following part will mostly focus on how we accomplished the shadows you can see in the game. Here's a screenshot of how it currently looks:</p>
 <img src ="pictures/final-shadow-showcase.png" alt="There should be an image with a cool shadow here..." style="width:width;height:height" title="Notice how the two lights cast different shadows with different colors."/>
@@ -210,7 +218,7 @@ velocity = new Vector3(horizontalVelocity.X, verticalVelocity, horizontalVelocit
 <p>To visualize the vertices, one can render the whole scene using "wireframe mode", meaning that only the edges are shown:</p>
 <pre><code>rasterizerState.FillMode = FillMode.WireFrame;</code></pre>
 <img src ="pictures/wireframe-white.png" alt="There should be an image here with white lines everywhere..." style="width:width;height:height" title="We could optimize the floor by using only two triangles instead of this mesh, but this way, we can have a cool checkerboard pattern on it."/>
-<h3> 2.1 Matrices<a name="Matrices"><a/></h3>
+<h3> 2.1 Matrices<a name="Matrices"></a></h3>
 <p>One of the most useful mathematical things for 3d programming are matrices (singular matrix). In general, a matrix is just a table containing one number per cell. While a variety of matrices exist, the 4x4 matrix (4 rows and 4 columns = 16 cells) is the most common one in 3d programming. It can be used to transform, scale and rotate 4d vectors and a whole lot more.</p>
 <p>To make things easier, the Monogame framework provides functions to create many commonly used matrices so we did not have to write all the matrix code by hand. We did, however, research the topic a bit and now understand at least the basics of how matrices are used.</p>
 <h4> 2.1.1 Matrix-Vector multiplication</h4>
@@ -219,7 +227,7 @@ velocity = new Vector3(horizontalVelocity.X, verticalVelocity, horizontalVelocit
     [m31, m32, m33, m34]
     [m41, m42, m43, m44]
 </code></pre>
-</p>This is a 4d-vector:</p>
+<p>This is a 4d-vector:</p>
 <pre><code>    [x, y, z, w]     </code></pre>
 <p>Multiplying the vector with the matrix results in this vector:</p>
 <pre><code>   [m11 * x + m12 * y + m13 * z + m14 * w,
@@ -244,10 +252,12 @@ velocity = new Vector3(horizontalVelocity.X, verticalVelocity, horizontalVelocit
 <p>However, if we add a fourth dimension with the value one, it is now possible to add a value n to each output component simply by putting n in the fourth component of the matrix.</p>
 <h4> 2.1.4 Different matrix types</h4>
 <p>We already mentioned the translation matrix above, which moves a vector by an offset. Here are a few other matrices we use for our game. Monogame can create these with a few parameters, so we do not have to understand how all of these work.</p>
-<ul><li> Scalation matrix: scales the vector by a given factor</li>
-<li> Rotation matrix: rotates the vector around the x, y or z axis</li></ul>
-<li> View matrix: Transforms the vector from world space to camera space, which means that z faces away from the camera and x and y are parralel to the screen</li></ul>
-<li> Projection matrix: Transforms the vector from camera space to screen space. Taking into account the size of the viewfinder, the aspect ratio and distance from the camera for perspective, this matrix transforms the x and y value to a range of -1 to 1 from left to right / top to bottom and the z value from 0 at the camera to 1 at the maximum render distance.</li></ul>
+<ul>
+	<li> Scalation matrix: scales the vector by a given factor</li>
+	<li> Rotation matrix: rotates the vector around the x, y or z axis</li>
+	<li> View matrix: Transforms the vector from world space to camera space, which means that z faces away from the camera and x and y are parralel to the screen</li>
+	<li> Projection matrix: Transforms the vector from camera space to screen space. Taking into account the size of the viewfinder, the aspect ratio and distance from the camera for perspective, this matrix transforms the x and y value to a range of -1 to 1 from left to right / top to bottom and the z value from 0 at the camera to 1 at the maximum render distance.</li>
+</ul>
 <p>There are many more types of matrices and one can do a lot of interesting things with matrices because they are flexible, but the above are the most important ones for our game.</p>
 <p>Vertices are usually transformed on the GPU using a shader.</p>
 <h3> 2.2 Shaders</h3>
@@ -287,13 +297,13 @@ velocity = new Vector3(horizontalVelocity.X, verticalVelocity, horizontalVelocit
 <p>Shaders run millions of times every single second. This is their biggest advantage because the CPU could not run eiven basic calculations on millions of pixels 60 times a second (at least not if it also has to handle networking, collision etc.). The GPU is able to do so, but only because it was built for that specific task and that task only. For example, the pixel shader runs in parallel for many pixels at the same time which makes it impossible to exchange informations between the different pixels in a single frame.</p>
 <p>Performance also has a few quirks. Any kind of branching will result in a steep drop in performance. Therefore, if conditions should be avoided at all costs. Instead, one could multiply the result by 0 to effectively not execute a part of the code. For loops can be OK if they run a fixed number of times (we support 8 lights, so we simply run the lighting calculations 8 times), because the compiler can unravel the loop before even running the game, but if the number times the calculation runs changes at runtime, performance will drop.</p>
 <p>Also, debugging shaders is a nightmare.</p>
-<h3> 2.3 Lighting <a name="Lighting"><a/></h3>
+<h3> 2.3 Lighting <a name="Lighting"></a></h3>
 <p>While lighting and shadows in real-life are very closely related, they are implemented using very different techniques in realtime graphics. This article will only cover lighting (the simple part) while the next one will cover shadows (the challenging part).</p>
 <p>Lighting is calculated in the pixel shader based on a variety of parameters, most importantly the world position of the pixel and light source and the normal of the triangle. The code can be found in AuroraClient.DX/Content/shaders/static-effect.fx .</p>
 <h4> 2.3.1 Additive lighting</h4>
 <p>We can have up to 8 lights in the scene at the same time. Therefore, our lighting shader contains a loop that runs 8 times.</p>
 <pre><code>    float3 totalColor = float3(0,0,0);
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i &lt; 8; i++)
     {
         totalColor += // complicated lighting calculation...
     }
@@ -329,7 +339,7 @@ velocity = new Vector3(horizontalVelocity.X, verticalVelocity, horizontalVelocit
 <p>The max(a, b) functions returns the bigger of the two values. max(0, a) therefore returns a if a is positive and otherwise 0. We have to do this because otherwise, if lightIntensity and offCenterFactor are both negative, the minuesses cancel out and the triangle is lit even though it faces in the wrong direction _and_ is outside of the lightcone.</p>
 <p>Now we can add the color of the light multiplied by the totalFactor to the totalColor and we have finished the simple lighting shader:</p>
 <pre><code>    float3 totalColor = float3(0,0,0);
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i &lt; 8; i++)
     {
         float3 lightDirection = mul(input.WorldPosition, lightDirectionMatrix[i]);
         float lightIntensity = dot(-normalize(lightDirection), input.NormalReal);
@@ -344,7 +354,7 @@ velocity = new Vector3(horizontalVelocity.X, verticalVelocity, horizontalVelocit
         totalColor += lightColors[i] * totalFactor;
     }
     return float4(totalColor * input.Color, 1);</code></pre>
-<h3> 2.4 Shadows <a name="Shadows"><a/></h3>
+<h3> 2.4 Shadows <a name="Shadows"></a></h3>
 <p>Shadows are the part of the world that isn't hit by light. We use a technique called shadowmapping to calculate which parts of the scene are lit and which are occluded by other objects.</p>
 <p>Shadowmapping works in two steps:</p>
 <p>1. Render the scene from the lights point of view to a texture. Only store the depth information, not the colors.</p>
@@ -356,9 +366,9 @@ velocity = new Vector3(horizontalVelocity.X, verticalVelocity, horizontalVelocit
         int shadowMapIndex = 0;
         foreach (var lightSource in lightSources.OrderByDescending(ls => ls.priority))
         {
-            for (int i = 0; i < lightSource.requiredShadowMaps; i++)
+            for (int i = 0; i &lt; lightSource.requiredShadowMaps; i++)
             {
-                if (shadowMapIndex < shadowMapCount)
+                if (shadowMapIndex &lt; shadowMapCount)
                 {
                     graphicsDevice.SetRenderTarget(shadowMaps[shadowMapIndex]);
                     graphicsDevice.Clear(Color.Black);
