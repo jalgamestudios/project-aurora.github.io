@@ -1,0 +1,5 @@
+C:\Users\Luis\Desktop\Programming_solo_projects\markdownToHTML\markdownToHTML\bin\Debug\markdownToHTML.exe
+C:\Users\Luis\Desktop\Programming_solo_projects\markdownToHTML\markdownToHTML\bin\Debug\markdownToHTML.pdb
+C:\Users\Luis\Desktop\Programming_solo_projects\markdownToHTML\markdownToHTML\obj\Debug\markdownToHTML.csprojResolveAssemblyReference.cache
+C:\Users\Luis\Desktop\Programming_solo_projects\markdownToHTML\markdownToHTML\obj\Debug\markdownToHTML.exe
+C:\Users\Luis\Desktop\Programming_solo_projects\markdownToHTML\markdownToHTML\obj\Debug\markdownToHTML.pdb
