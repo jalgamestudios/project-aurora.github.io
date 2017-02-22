@@ -109,7 +109,7 @@ namespace markdownToHTML
             else if (input.StartsWith("!"))
             {
                 //is picture
-                return "<img src =\"" +getLink(input) + "\" alt=\""+getAlt(input)+"\" style=\"width:width;height:height\" title=\""+ getTitle(input) + "\"/>";
+                return "<img src =\"" +getLink(input) + "\" alt=\""+getAlt(input)+"\"  title=\""+ getTitle(input) + "\"/>";
             }
             else if (input != "")
             {
