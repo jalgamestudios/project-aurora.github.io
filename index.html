@@ -16,25 +16,39 @@
 <p>Because of the multiplayer aspect, we created multiple projects that work together:</p>
 <img src ="pictures/project-structure.PNG" alt="Imagine a picture of a list of all the projects" style="width:width;height:height" title="If you count the projects, you will notice there are only 8..."/>
 <p>The first folder (Client) contains everything that is only needed on the client-side:</p>
-<ul><li> AuroraClient.3DRenderer contains functions for the rendering. We seperated it from the rest of the project so that we can reuse it in other 3d games or applications.</li>
-<li> AuroraClient.Shared contains all the client-side code. Shared projects are a cool feature of Visual Studio. They are not compiled directly, instead, their code is automatically inserted into selected projects, in our case AuroraClient.DX. This allows us to use the code from AuroraClient.Shared in multiple other projects. We decided to do this like that because we want to be able to create an OpenGL version for Linux and Mac in the future. The client also contains code for networking and sets up the renderer.</li></ul>
+<ul>
+	<li> AuroraClient.3DRenderer contains functions for the rendering. We seperated it from the rest of the project so that we can reuse it in other 3d games or applications.</li>
+	<li> AuroraClient.Shared contains all the client-side code. Shared projects are a cool feature of Visual Studio. They are not compiled directly, instead, their code is automatically inserted into selected projects, in our case AuroraClient.DX. This allows us to use the code from AuroraClient.Shared in multiple other projects. We decided to do this like that because we want to be able to create an OpenGL version for Linux and Mac in the future. The client also contains code for networking and sets up the renderer.</li>
+</ul>
 <p>The Server folder contains two projects:</p>
-<ul><li> The AuroraServer.Controller project contains server-specific logic. It is responsible for initializing the connections to the clients and to update certain game logic.</li>
-<li> The AuroraServer.Interface.Console is the server interface. This is a very simple program that simply starts up the server controller and updates it 60 times a second. We decided to separate the interface from the controller so we can, in theory, create different interfaces, e. g. one with a graphical user interface.</li></ul>
+<ul>
+	<li> The AuroraServer.Controller project contains server-specific logic. It is responsible for initializing the connections to the clients and to update certain game logic.</li>
+	<li> The AuroraServer.Interface.Console is the server interface. This is a very simple program that simply starts up the server controller and updates it 60 times a second. We decided to separate the interface from the controller so we can, in theory, create different interfaces, e. g. one with a graphical user interface.</li>
+</ul>
 <p>The Aurora.GameState contains the state of the game world, e. g. the position of all players. This project is compiled into a DLL (Dynamic Link Library) and then loaded into both the server and the client. This allows us to share the data structures for server and client. However, this still does not mean that the data is automatically synced: Server and Client need to send messages to each other in order to communicate any changes.</p>
 <p>Lastly, the TCP folder is responible for the low-level networking. The two projects are compiled into DLLs and used to communicate between server and client. They only contain functions to send messages to certain clients / the server and trigger events whenever a message is received. They are therefore very portable and could easily be used in other projects.</p>
 <p>Two projects are not shown in the list. One of them is a website experiment that doesn't really contain anything and the other one contains the "aurora tools". We wanted to use that e. g. to convert models files in a usable format, but so far, we always managed to find a solution out of the box.</p>
 <h2>Table of contents</h2>
-<p>1. <a href="#Networking">Networking</a></p>
-<p>1.1 <a href="#TCP">TCP</a></p>
-<p>1.2 <a href="#Transmitteddata">Transmitted data</a></p>
-<p>1.3 <a href="#Futureofourdatatransfer">Future of our data transfer</a></p>
-<p>1.4 <a href="#Controls">Controls</a></p>
-<p>1.5 <a href="#Collision">Collision</a></p>
-<p>2. <a href="#Rendering">Rendering</a></p>
-<p>2.1 <a href="#Matrices">Matrices</a></p>
-<p>2.3 <a href="#Lighting">Lighting</a></p>
-<p>3.4 <a href="#Shadows">Shadows</a></p>
+<ol>
+<li>
+	<a href="#Networking">Networking</a>
+	<ol>
+		<li><a href="#TCP">TCP</a></li>
+		<li><a href="#Transmitteddata">Transmitted data</a></li>
+		<li><a href="#Futureofourdatatransfer">Future of our data transfer</a></li>
+		<li><a href="#Controls">Controls</a></li>
+		<li><a href="#Collision">Collision</a></li>
+	</ol>
+</li>
+<li><a href="#Rendering">Rendering</a>
+	<ol>
+		<li><a href="#Matrices">Matrices</a></li>
+		<li><a href="#Lighting">Lighting</a></li>
+		<li><a href="#Shadows">Shadows</a></li>
+	</ol>
+</li>
+</ol>
+
 <h2>1. Networking <a name="Networking"><a/></h2>
 <p>The problems and our solutions to data management</p>
 <p>We decided to make a multiplayer game because neither of has had done something with multiplayer before and we felt up for the challenge.  Overall the state of the game needs to be transferred between computers so that every player is in the same situation without this taking up so much bandwith that it wouldn't run smoothly. </p>
@@ -42,7 +56,7 @@
 <p>This was already quite the challenge, because we never had to convert information into bits and bytes manually before. Usually, it sufficed to assign a variable and the compiler takes care of the low-level commands, but in our case, the TCP protocol (which thankfully was implemented in the .NET framework by default) only allows to send a stream of bytes to another client.</p>
 <p>We have a setup where each client has a virtual TCP connection to a singular server that mostly just relays the information that it gets from a client to the other clients. </p>
 <p>The server is just a console application:</p>
-<img src ="serverStartup.png" alt="alt text" style="width:width;height:height" title="A screenshot of the server"/>
+<img src ="pictures/server-startup.png" alt="In this picture you can see the output of the server during startup. Well, you can't see it, but you could, had the image not failed to load. Fun fact: We can toggle moreDramaticStartup in the code to insert random little pauses during startup, because everything appearing instantly on the screen is kind-of boring." style="width:width;height:height" title="A screenshot of the server"/>
 <p>The serverside TCP class can then (mainly) send data to a specific connected user:</p>
 <pre><code>public void send(byte[] bytes, int clientIndex)
         {

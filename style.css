@@ -12,8 +12,7 @@ body{
 }
 
 h1, h2, h3, h4, h5, h6{
-	/* font-family: century gothic; */
-	font-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif;
+	font-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif; /*Tries to use Century Gothic, otherwise takes any installed sans-serif font*/
 	font-weight: 100;
 }
 
@@ -29,3 +28,8 @@ h3{
 h4{
 	font-size: 22px;
 }
+
+/* Ordered lists with 1.1 etc., source: http://stackoverflow.com/questions/4098195/can-ordered-list-produce-result-that-looks-like-1-1-1-2-1-3-instead-of-just-1 */
+ol { counter-reset: item }
+lo { display: block }
+li:before { content: counters(item, ".") " "; counter-increment: item }
